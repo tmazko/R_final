@@ -1,0 +1,43 @@
+---
+title: "Final Project: Smart City Data Hackathon"
+subtitle: "STAT 150: R for Data Science"
+author: 
+  - name: "Alona Nazarenko, Tetiana Mazko, Tymofii Muraviov"
+    affiliations: ["Kyiv School of Economics"]
+format:
+  revealjs:
+    theme: [dracula]
+    css: custom.scss
+    mermaid:
+      theme: forest
+    mouse-wheel: true
+    slide-number: true
+    transition: fade
+    code-line-numbers: true
+    navigation-mode: vertical
+---
+# Welcome
+
+## Quarto
+Quarto enables you to weave together content.
+
+
+## Bullets
+- Content authored with markdown
+- Output from executable code
+
+---
+# Data 
+
+## data sets
+
+
+---
+# Aggrigation 
+---
+# Visualization & Analys 
+---
+# Realation to ukraine 
+
+
+

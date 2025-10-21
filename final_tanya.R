@@ -48,6 +48,20 @@ dbExecute(con, "
     COPY licenses TO 'licenses.parquet' (FORMAT 'parquet');
 ")
 
+
+
+
+
+
+dbExecute(con, "
+    CREATE TABLE shooting AS
+    SELECT * FROM read_csv_auto('data/shooting.csv');
+")
+
+dbExecute(con, "
+    COPY shooting TO 'shooting.parquet' (FORMAT 'parquet');
+")
+
 dbDisconnect(con, shutdown = TRUE) # Disconnect from DuckDB and shut it down
 
 #------------------------------------------------------------
