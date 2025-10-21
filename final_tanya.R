@@ -231,6 +231,13 @@ my_colors <- c(
 )
 
 
+race_data <- arrests |>
+  filter(!is.na(perp_race)) |>
+  group_by(perp_race) |>
+  summarise(n = n(), .groups = "drop") |>
+  mutate(
+    percent = n / sum(n) * 100
+  )
 race_data <- race_data |>
   filter(perp_race!="UNKNOWN" & perp_race!="AMERICAN INDIAN/ALASKAN NATIVE")|>
   arrange(desc(perp_race)) |>
