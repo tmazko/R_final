@@ -279,7 +279,6 @@ age_data <- arrests |>
     angle = 90 - 360 * ypos / sum(percent)
   )
 
-# Кольори для вікових груп
 age_colors <- c(
   "<18" = "#9b5de5",
   "18-24" = "#f15bb5",
