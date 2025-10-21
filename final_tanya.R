@@ -1,3 +1,4 @@
+if(!require(pacman)) install.packages("pacman")
 pacman::p_load(
   tidyverse,
   rvest,
@@ -5,7 +6,8 @@ pacman::p_load(
   plotly,
   arrow,
   duckdb,
-  DBI
+  DBI,
+  janitor
 )
 
 
@@ -27,8 +29,7 @@ dbExecute(con, "
 dbExecute(con, "
     COPY arrests TO 'arrest_data.parquet' (FORMAT 'parquet');
 ")
-arrests <- arrow::read_parquet("arrest_data.parquet")
-arrests
+
 
 #------licenses data to parquet
 dbExecute(con, "
@@ -46,8 +47,12 @@ dbExecute(con, "
 dbExecute(con, "
     COPY licenses TO 'licenses.parquet' (FORMAT 'parquet');
 ")
-licenses <- arrow::read_parquet("licenses.parquet")
-licenses
-
 
 dbDisconnect(con, shutdown = TRUE) # Disconnect from DuckDB and shut it down
+
+#------------------------------------------------------------
+arrests <- arrow::read_parquet("arrest_data.parquet") |> 
+  clean_names()
+
+licenses <- arrow::read_parquet("licenses.parquet") |>
+  clean_names()
