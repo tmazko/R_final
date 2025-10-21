@@ -107,7 +107,7 @@ glimpse(arrests)
 
 
 arrests <- arrests |>
-  mutate(arrest_date   = as.Date(arrest_date)) |>  # або ymd() якщо формат ISO
+  mutate(arrest_date   = as.Date(arrest_date)) |>  
   mutate(month = month(arrest_date))
 
 monthly_arrests <- arrests |>
@@ -139,7 +139,7 @@ ggplot(monthly_arrests, aes(x = month, y = total_arrests)) +
 glimpse(shooting)
 
 shooting <- shooting |>
-  mutate(occur_date   = as.Date(occur_date)) |>  # або ymd() якщо формат ISO
+  mutate(occur_date   = as.Date(occur_date)) |>  
   mutate(month = month(occur_date))
 
 monthly_shooting <- shooting |>
@@ -158,7 +158,7 @@ ggplot(monthly_shooting, aes(x = month, y = total_shootings)) +
     x = "Month", 
     y = "Total Shootings" ) + 
   geom_text(
-    aes(label = as.integer(total_shootings)), # новий спосіб
+    aes(label = as.integer(total_shootings)),
     vjust = -0.7,
     size = 3.5,
     color = "#721536",
@@ -195,7 +195,7 @@ gb_sex_category |>
     y = percent,
     fill = perp_sex
   )) +
-  geom_col(position = "fill") +  # 100% stacked bar
+  geom_col(position = "fill") +  
   coord_flip() +
   scale_y_continuous(labels = percent_format()) +
   scale_fill_manual(values = c("Male" = "#abc4ff", "Female" = "#fcb0f3")) +
@@ -258,4 +258,62 @@ ggplot(race_data, aes(x = 2, y = percent, fill = perp_race)) +
   ) +
   theme(
     plot.title = element_text(size = 16)
+  )
+
+#------------Age---------------------------------------
+glimpse(arrests)
+unique(arrests$age_group)
+
+
+age_data <- arrests |>
+  filter(!is.na(age_group)) |>
+  group_by(age_group) |>
+  summarise(n = n(), .groups = "drop") |>
+  mutate(
+    percent = n / sum(n) * 100,
+    label = paste0(round(percent, 1), "%")
+  ) |>
+  arrange(desc(age_group)) |>
+  mutate(
+    ypos = cumsum(percent) - percent / 2,
+    angle = 90 - 360 * ypos / sum(percent)
+  )
+
+# Кольори для вікових груп
+age_colors <- c(
+  "<18" = "#9b5de5",
+  "18-24" = "#f15bb5",
+  "25-44" = "#fee440",
+  "45-64" = "#00bbf9",
+  "65+" = "#cccccc"
+)
+age_data <- age_data %>%
+  arrange(desc(age_group)) %>%
+  mutate(
+    ymax = cumsum(percent),
+    ymin = c(0, head(ymax, n = -1)),
+    label_pos = (ymax + ymin) / 2,
+    angle = 90 - 360 * label_pos / sum(percent)  
+    
+  )
+
+
+ggplot(age_data, aes(ymax = ymax, ymin = ymin, xmax = 4, xmin = 2, fill = age_group)) +
+  geom_rect(color = "white") +
+  coord_polar(theta = "y") +
+  xlim(c(0, 5)) +  
+  geom_text(
+    aes(x = 4.78, y = label_pos, label = paste0(round(percent, 1), "%"),
+        angle = ifelse(angle < -90, angle + 180, angle)),
+    size = 4,
+    
+  ) +
+  scale_fill_manual(values = age_colors) +
+  theme_void() +
+  labs(
+    title = "Distribution of Arrests by Age in NYC",
+    fill = "Age Group"
+  ) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
   )
