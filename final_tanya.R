@@ -24,7 +24,7 @@ con <- dbConnect(duckdb::duckdb())
 
 dbExecute(con, "
     CREATE TABLE arrests AS
-    SELECT * FROM read_csv_auto('arrest_data.csv');
+    SELECT * FROM read_csv_auto('data/arrest_data.csv');
 ")
 dbExecute(con, "
     COPY arrests TO 'arrest_data.parquet' (FORMAT 'parquet');
@@ -35,7 +35,7 @@ dbExecute(con, "
 dbExecute(con, "
     CREATE TABLE licenses AS
     SELECT * FROM read_csv_auto(
-        'licenses.csv',
+        'data/licenses.csv',
         delim = ',',
         header = true,
         quote = '\"',
@@ -51,8 +51,8 @@ dbExecute(con, "
 dbDisconnect(con, shutdown = TRUE) # Disconnect from DuckDB and shut it down
 
 #------------------------------------------------------------
-arrests <- arrow::read_parquet("arrest_data.parquet") |> 
+arrests <- arrow::read_parquet("data/arrest_data.parquet") |> 
   clean_names()
 
-licenses <- arrow::read_parquet("licenses.parquet") |>
+licenses <- arrow::read_parquet("data/licenses.parquet") |>
   clean_names()
